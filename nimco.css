@@ -1,0 +1,20 @@
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: blue;
+    color: white;
+}
+.container-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: aqua;
+    justify-content: space-between;
+}
+.container-flexdiv {
+    background-color: black;
+}
+a {
+  
+}

@@ -1,0 +1,37 @@
+* {
+   background-color: white; 
+  margin: 0;
+  padding: 0;
+  border-radius: 50px;
+}
+.top-header {
+    background-color: blue;
+    padding: 20px;
+    width: 100%;
+}
+.top-header  {
+    background-color: black;
+    color: blue;
+    text-align: center;
+    font-size: 40px;
+}
+section {
+    background-color: blue;
+    display: flex;
+    padding: 10px;
+    gap: 50px;
+    border-radius: none;
+}
+.maxamed-menu  {
+    text-align: center;
+}
+.p {
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+    ;
+}
+b {
+    font-size: 40px;
+    text-align: right;
+    color: brown;
+}
