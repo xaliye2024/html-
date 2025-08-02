@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Property</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>Add Your Property</h2>
+  <form id="property-form">
+    <input type="text" placeholder="Property Title" name="title" required />
+    <input type="text" placeholder="Location" name="location" required />
+    <input type="number" placeholder="Price $" name="price" required />
+    <input type="text" placeholder="WhatsApp Number" name="whatsapp" required />
+    <textarea placeholder="Description" name="description" required></textarea>
+    <input type="file" accept="image/*" name="image" required />
+    <button type="submit">Post Property</button>
+  </form>
+
+  <script src="add.js"></script>
+</body>
+</html>

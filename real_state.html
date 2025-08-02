@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Xaliye Real Estate</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f4f8;
+    }
+    header {
+      background-color: #0d6efd;
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    h1, h2 {
+      margin: 20px;
+    }
+    #form-section {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      box-sizing: border-box;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0b5ed7;
+    }
+    .property-card {
+      background: white;
+      border: 1px solid #ddd;
+      margin: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.03);
+    }
+    .property-card img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .whatsapp, .edit-btn, .delete-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+    .whatsapp {
+      background-color: #25D366;
+      color: white;
+    }
+    .edit-btn {
+      background-color: #ffc107;
+      color: black;
+    }
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Xaliye Real Estate</h1>
+    <nav>
+      <a href="#" onclick="showForm()">Add Property</a>
+      <a href="#" onclick="showProperties()">View Properties</a>
+    </nav>
+  </header>
+
+  <section id="form-section" style="display: none;">
+    <h2 id="form-title">Add Your Property</h2>
+    <form id="property-form">
+      <input type="text" placeholder="Property Title" name="title" required />
+      <input type="text" placeholder="Location" name="location" required />
+      <input type="number" placeholder="Price $" name="price" required />
+      <input type="text" placeholder="WhatsApp Number" name="whatsapp" required />
+      <textarea placeholder="Description" name="description" required></textarea>
+      <input type="file" accept="image/*" name="image" />
+      <input type="hidden" name="editIndex" />
+      <button type="submit">Save Property</button>
+    </form>
+  </section>
+
+  <main id="property-list"></main>
+
+  <script>
+    function showForm(index = null) {
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('property-list').style.display = 'none';
+      if (index === null) {
+        document.getElementById('property-form').reset();
+        document.getElementById('form-title').innerText = "Add Your Property";
+      }
+    }
+
+    function showProperties() {
+      document.getElementById('form-section').style.display = 'none';
+      document.getElementById('property-list').style.display = 'block';
+      loadProperties();
+    }
+
+    document.getElementById('property-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const editIndex = form.get('editIndex');
+      const properties = JSON.parse(localStorage.getItem('properties')) || [];
+
+      function saveData(imageSrc) {
+        const property = {
+          title: form.get('title'),
+          location: form.get('location'),
+          price: form.get('price'),
+          whatsapp: form.get('whatsapp'),
+          description: form.get('description'),
+          image: imageSrc
+        };
+
+        if (editIndex) {
+          properties[editIndex] = property;
+        } else {
+          properties.push(property);
+        }
+
+        localStorage.setItem('properties', JSON.stringify(properties));
+        alert("Property saved successfully!");
+        e.target.reset();
+        showProperties();
+      }
+
+      const file = form.get('image');
+      if (file && file.size > 0) {
+        const reader = new FileReader();
+        reader.onload = () => saveData(reader.result);
+        reader.readAsDataURL(file);
+      } else {
+        const oldImage = editIndex ? properties[editIndex].image : "";
+        saveData(oldImage);
+      }
+    });
+
+    function loadProperties() {
+      const list = document.getElementById('property-list');
+      list.innerHTML = '';
+      const properties = JSON.parse(localStorage.getItem('properties')) || [];
+
+      properties.forEach((prop, index) => {
+        const div = document.createElement('div');
+        div.className = 'property-card';
+        div.innerHTML = `
+          <img src="${prop.image}" alt="House" />
+          <h3>${prop.title}</h3>
+          <p><strong>Location:</strong> ${prop.location}</p>
+          <p><strong>Price:</strong> $${prop.price}</p>
+          <p>${prop.description}</p>
+          <a class="whatsapp" href="https://wa.me/${prop.whatsapp}" target="_blank">Contact via WhatsApp</a>
+          <button class="edit-btn" onclick="editProperty(${index})">Edit</button>
+          <button class="delete-btn" onclick="deleteProperty(${index})">Delete</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function deleteProperty(index) {
+      if (confirm("Are you sure you want to delete this property?")) {
+        const properties = JSON.parse(localStorage.getItem('properties')) || [];
+        properties.splice(index, 1);
+        localStorage.setItem('properties', JSON.stringify(properties));
+        loadProperties();
+      }
+    }
+
+    function editProperty(index) {
+      const properties = JSON.parse(localStorage.getItem('properties')) || [];
+      const prop = properties[index];
+      showForm(index);
+      const form = document.getElementById('property-form');
+      form.title.value = prop.title;
+      form.location.value = prop.location;
+      form.price.value = prop.price;
+      form.whatsapp.value = prop.whatsapp;
+      form.description.value = prop.description;
+      form.editIndex.value = index;
+      document.getElementById('form-title').innerText = "Edit Property";
+    }
+
+    // Load initially
+    showProperties();
+  </script>
+</body>
+</html>
